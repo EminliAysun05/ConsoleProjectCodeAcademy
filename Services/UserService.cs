@@ -24,6 +24,15 @@ public class UserService
     }
     public void AddUser(User user)
     {
+
+
+        foreach (var u in DB.Users)
+        {
+            if(u.Email==user.Email)
+            {
+                throw new AlreadyExistsException("This email is already exist");
+            }
+        }
         Array.Resize(ref DB.Users, DB.Users.Length + 1);
         DB.Users[DB.Users.Length - 1] = user;
     }

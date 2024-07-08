@@ -2,6 +2,7 @@
 
 using ConsoleProjectCodeAcademy.Exceptions;
 using ConsoleProjectCodeAcademy.Models;
+using System.Xml.Linq;
 using static System.Reflection.Metadata.BlobBuilder;
 
 namespace ConsoleProjectCodeAcademy.Services
@@ -26,9 +27,13 @@ namespace ConsoleProjectCodeAcademy.Services
         }
 
 
-        public Medicine[] GetAllMedicines()
+        public void GetAllMedicines(int userId)
         {
-            return DB.Medicines;
+            foreach (var medicine in DB.Medicines)
+            {
+                if(medicine.UserId==userId)
+                    Console.WriteLine(medicine);
+            }
         }
         //sorus exception lazimdimi
         public Medicine GetMedicineById(int id)
@@ -63,15 +68,18 @@ namespace ConsoleProjectCodeAcademy.Services
                 {
                     Console.WriteLine(Medicine);
                 }
-            }
-        }
-        public void RemoveMedicine(int id)
-        {
 
+            }
+            throw new NotFoundException($"Medicine with name {categoryId} not found...");
+        }
+        public void RemoveMedicine( int medicineId, int userId)
+        {
+           // bool found = false;
             for (int i = 0; i < DB.Medicines.Length; i++)
             {
-                if (DB.Medicines[i].Id == id)
+                if (DB.Medicines[i].Id == medicineId && DB.Medicines[i].Id == userId)
                 {
+                   // found = true;
                     for (int j = i; j < DB.Medicines.Length; j++)
                     {
                         DB.Medicines[j] = DB.Medicines[j + 1];
