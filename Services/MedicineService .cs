@@ -62,40 +62,46 @@ namespace ConsoleProjectCodeAcademy.Services
         //sorus2
         public void GetMedicineByCategory(int categoryId)
         {
+            bool isExist = false;
             foreach (var Medicine in DB.Medicines)
             {
                 if (Medicine.CategoryId == categoryId)
                 {
                     Console.WriteLine(Medicine);
+                    isExist=true;
                 }
 
             }
-            throw new NotFoundException($"Medicine with name {categoryId} not found...");
+
+
+            if (isExist is false)
+                throw new NotFoundException("");
+
         }
         public void RemoveMedicine( int medicineId, int userId)
         {
            // bool found = false;
             for (int i = 0; i < DB.Medicines.Length; i++)
             {
-                if (DB.Medicines[i].Id == medicineId && DB.Medicines[i].Id == userId)
+                if (DB.Medicines[i].Id == medicineId && DB.Medicines[i].UserId == userId)
                 {
                    // found = true;
-                    for (int j = i; j < DB.Medicines.Length; j++)
+                    for (int j = i; j < DB.Medicines.Length-1; j++)
                     {
                         DB.Medicines[j] = DB.Medicines[j + 1];
                     }
                     Array.Resize(ref DB.Medicines, DB.Medicines.Length - 1);
-                    break;
+                    return;
                 }
 
             }
             throw new NotFoundException("Medicine with ID {id} not found...");
         }
-        public void UpdateMedicine(int id, Medicine newMedicine)
+        public void UpdateMedicine(int id, Medicine newMedicine,int userId)
         {
             foreach (var medicine in DB.Medicines)
             {
-                if(medicine.Id== id)
+                if(medicine.Id == id && medicine.Id == userId)
                 {
                     medicine.Name = newMedicine.Name;
                     medicine.Price = newMedicine.Price;

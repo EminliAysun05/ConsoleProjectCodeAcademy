@@ -41,7 +41,7 @@ namespace ConsoleProjectCodeAcademy.Exceptions.Validations
         {
             bool isExistUpperCase = false;
             bool isExistDigit = false;
-            if (!(password.Length == 8))
+            if (!(password.Length >= 8))
             {
                 return false;
             }
