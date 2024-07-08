@@ -24,7 +24,7 @@ namespace ConsoleProjectCodeAcademy
 
             restart:
 
-                Helper.Print("salam", ConsoleColor.Red);
+                
                 Console.WriteLine("Menu: ");
                 Console.WriteLine("1.User Registration");
                 Console.WriteLine("2.User Login");

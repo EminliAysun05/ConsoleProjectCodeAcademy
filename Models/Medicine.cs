@@ -39,7 +39,7 @@ namespace ConsoleProjectCodeAcademy.Models
         }
         public override string ToString()
         {
-            return $"ID: {Id}, Name: {Name}, Price: {Price}, Category ID: {CategoryId})";
+            return $"ID: {Id}, Name: {Name}, Price: {Price}, Category ID: {CategoryId}, DateTime - {CreatedTime.ToShortDateString()})";
         }
     }
 }
