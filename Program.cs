@@ -79,41 +79,58 @@ namespace ConsoleProjectCodeAcademy
                         {
                             Console.WriteLine(password);
                         }
+                        try
+                        {
+                            User user = new User(fullname, email, password);
+                            userService.AddUser(user);
+                        }
+                        catch (Exception e)
+                        {
+                            Helper.Print(e.Message, ConsoleColor.Red);
+                        }
 
-                        User user = new User(fullname, email, password);
-                        userService.AddUser(user);
+
 
                         goto restart;
 
 
                     case "2":
 
-                        Console.WriteLine("Do you have an account");
+                        Console.WriteLine("Do you have an account? (yes/no)");
                         string answer = Console.ReadLine();
                         if (answer.ToLower() == "no")
                         {
                             Console.WriteLine("Please, register...");
                             goto registration;
                         }
-
-
-
-                        Console.WriteLine("Enter email: ");
-                        string loginEmail = Console.ReadLine();
-                        Console.WriteLine("Enter password: ");
-                        string loginPassword = Console.ReadLine();
-                        try
+                        else if (answer == "yes")
                         {
-                            activeUser = userService.Login(loginEmail, loginPassword);
-                            Helper.Print($"{activeUser.Fullname} welcome!", ConsoleColor.Green);
-                            // Console.WriteLine($"{activeUser.Fullname} welcome!");
 
+                            Console.WriteLine("Enter email: ");
+                            string loginEmail = Console.ReadLine();
+                            Console.WriteLine("Enter password: ");
+                            string loginPassword = Console.ReadLine();
+
+
+
+                            try
+                            {
+                                activeUser = userService.Login(loginEmail, loginPassword);
+                                Helper.Print($"{activeUser.Fullname} welcome!", ConsoleColor.Green);
+                                // Console.WriteLine($"{activeUser.Fullname} welcome!");
+
+                            }
+                            catch (NotFoundException ex)
+                            {
+
+                                Helper.Print(ex.Message, ConsoleColor.Red);
+
+                                goto restart;
+                            }
                         }
-                        catch (NotFoundException ex)
+                        else
                         {
-
-                            Helper.Print(ex.Message, ConsoleColor.Red);
-
+                            Helper.Print("Invalid input.Please enter 'yes' or 'no'", ConsoleColor.Red);
                             goto restart;
                         }
 
@@ -152,7 +169,7 @@ namespace ConsoleProjectCodeAcademy
                             try
                             {
                                 Helper.Print("\nEnter the name of category: ", ConsoleColor.Magenta);
-                            
+
                                 string categoryName = Console.ReadLine();
                                 if (string.IsNullOrWhiteSpace(categoryName))
                                 {
@@ -172,7 +189,7 @@ namespace ConsoleProjectCodeAcademy
 
                         case "2":
                             Helper.Print("\nAll medicines: ", ConsoleColor.Magenta);
-                           // Console.WriteLine("\nAll medicines: ");
+                            // Console.WriteLine("\nAll medicines: ");
                             medicineService.GetAllMedicines(activeUser.Id);
 
 
@@ -181,10 +198,10 @@ namespace ConsoleProjectCodeAcademy
                             try
                             {
                                 Helper.Print("\nEnter category id: ", ConsoleColor.Magenta);
-                                
+
                                 int categorySearchId = int.Parse(Console.ReadLine());
                                 Helper.Print($"Category id {categorySearchId} medicines: ", ConsoleColor.Magenta);
-                                
+
                                 medicineService.GetMedicineByCategory(categorySearchId);
                                 foreach (var Medicine in DB.Medicines)
                                 {
@@ -212,7 +229,7 @@ namespace ConsoleProjectCodeAcademy
                             try
                             {
                                 Helper.Print("\nEnter the user id: ", ConsoleColor.Magenta);
-                               
+
                                 int searchId;
                             restartPrice:
                                 bool result = int.TryParse(Console.ReadLine(), out searchId);
@@ -224,10 +241,10 @@ namespace ConsoleProjectCodeAcademy
                                     goto restartPrice;
                                 }
                                 Helper.Print($"The medicines with {searchId}:", ConsoleColor.Magenta);
-                                
+
                                 medicineService.GetMedicineById(searchId);
                                 Helper.Print($"{searchId} medicines: ", ConsoleColor.Magenta);
-                              
+
                                 foreach (var Medicine in DB.Medicines)
                                 {
                                     if (Medicine.Id == searchId)
@@ -254,10 +271,10 @@ namespace ConsoleProjectCodeAcademy
                             try
                             {
                                 Helper.Print("\n Enter the name: ", ConsoleColor.Magenta);
-                        
+
                                 string searchName = Console.ReadLine();
                                 Helper.Print($"{searchName} medicines: ", ConsoleColor.Magenta);
-                                
+
                                 medicineService.GetMedicineByName(searchName);
                                 foreach (var Medicine in DB.Medicines)
                                 {
@@ -280,14 +297,15 @@ namespace ConsoleProjectCodeAcademy
                         case "6":
                             try
                             {
+                                decimal price;
                                 Helper.Print("Enter the information of new medicine: ", ConsoleColor.Magenta);
-                               
+
                                 Helper.Print("The name of medicine: ", ConsoleColor.Magenta);
-                               
                                 string medicineName = Console.ReadLine();
+
                                 Helper.Print("Price of medicine: ", ConsoleColor.Magenta);
-                                
-                                decimal price = int.Parse(Console.ReadLine());
+
+                                price = decimal.Parse(Console.ReadLine());
 
                                 Helper.Print("The categories of medicines: ", ConsoleColor.Green);
                                 //Console.WriteLine("The categories of medicines: ");
@@ -296,7 +314,7 @@ namespace ConsoleProjectCodeAcademy
                                     Console.WriteLine(category);
                                 }
                                 Helper.Print("The id of category: ", ConsoleColor.Magenta);
-                             
+
                                 int categoryId = int.Parse(Console.ReadLine());
                                 Medicine newMedicine1 = new Medicine(medicineName, price, activeUser.Id, categoryId);
                                 medicineService.CreateMedicine(newMedicine1);
@@ -315,7 +333,7 @@ namespace ConsoleProjectCodeAcademy
                             try
                             {
                                 Helper.Print("\nEnter medicine ID to remove: ", ConsoleColor.Magenta);
-                               
+
                                 int medicineIdToRemove = int.Parse(Console.ReadLine());
                                 medicineService.RemoveMedicine(medicineIdToRemove, activeUser.Id);
                                 Helper.Print($"Medicine id with {medicineIdToRemove} number removed", ConsoleColor.Green);
@@ -336,19 +354,19 @@ namespace ConsoleProjectCodeAcademy
                             try
                             {
                                 Helper.Print("\nEnter medicine ID to update: ", ConsoleColor.Magenta);
-                              
+
                                 int medicineUpdate = int.Parse(Console.ReadLine());
 
                                 var existMedicine = medicineService.GetMedicineById(medicineUpdate);
                                 Helper.Print("Enter updated medicine names: ", ConsoleColor.Magenta);
                                 Helper.Print("New name: ", ConsoleColor.Magenta);
-                              
+
                                 string updateMedicineName = Console.ReadLine();
                                 Helper.Print("New  price: ", ConsoleColor.Magenta);
-                                
+
                                 decimal updatedMedicinePrice = decimal.Parse(Console.ReadLine());
                                 Helper.Print("New category ID: ", ConsoleColor.Magenta);
-                              
+
                                 int updatedCategoryId = int.Parse(Console.ReadLine());
                                 Medicine updatedMedicine = new Medicine(updateMedicineName, updatedMedicinePrice, activeUser.Id, updatedCategoryId);
 
@@ -370,7 +388,7 @@ namespace ConsoleProjectCodeAcademy
                             break;
                         case "10":
                             Helper.Print("All categories: ", ConsoleColor.Magenta);
-                          
+
                             foreach (var category in DB.Categories)
                             {
                                 Console.WriteLine(category);

@@ -1,11 +1,30 @@
 ﻿
 
+using ConsoleProjectCodeAcademy.Exceptions;
+
 namespace ConsoleProjectCodeAcademy.Models
 {
     public class Medicine : BaseEntity
     {
         public string Name { get; set; }
-        public decimal Price { get; set; }
+
+        private decimal _price;
+        public decimal Price {
+            get
+            {
+                return _price;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    Console.WriteLine(value);
+                    throw new PriceException("Price should be greater than '0'");
+                }
+
+                _price= value;
+            }
+        }
         public int CategoryId { get; set; }
         public int UserId { get; set; }
         public DateTime CreatedTime { get; set; }
